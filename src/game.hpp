@@ -37,7 +37,7 @@
 typedef void game_update_map_height_func(map_pos_t pos, void *data);
 
 typedef struct {
-	map_t map; /* ADDITION */
+    map_t map; /* ADDITION */
 	/* 0 */
 	/* MOVED to map_t
 	uint32_t map_index_mask;
