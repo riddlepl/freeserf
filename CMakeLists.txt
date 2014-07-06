@@ -104,7 +104,6 @@ set(HEADERS src/map.h
             src/sdl-video.h
             src/gui.h
             src/list.h
-            src/version-vcs.h
             src/audio.h
             src/misc.h
             src/building.h
