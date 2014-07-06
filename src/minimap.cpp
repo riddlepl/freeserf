@@ -19,15 +19,15 @@
  * along with freeserf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "minimap.h"
-#include "gui.h"
-#include "viewport.h"
-#include "interface.h"
-#include "sdl-video.h"
-#include "game.h"
-#include "player.h"
-#include "misc.h"
-#include "data.h"
+#include "minimap.hpp"
+#include "gui.hpp"
+#include "viewport.hpp"
+#include "interface.hpp"
+#include "sdl-video.hpp"
+#include "game.hpp"
+#include "player.hpp"
+#include "misc.hpp"
+#include "data.hpp"
 
 
 #define MINIMAP_MAX_SCALE  8

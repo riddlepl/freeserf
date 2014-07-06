@@ -19,8 +19,8 @@
  * along with freeserf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "audio.h"
-#include "log.h"
+#include "audio.hpp"
+#include "log.hpp"
 
 
 /* Common audio. */

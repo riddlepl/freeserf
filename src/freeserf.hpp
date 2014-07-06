@@ -26,10 +26,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "gfx.h"
-#include "map.h"
-#include "random.h"
-#include "serf.h"
+#include "gfx.hpp"
+#include "map.hpp"
+#include "random.hpp"
+#include "serf.hpp"
 
 
 /* The length between game updates in miliseconds. */

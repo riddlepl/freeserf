@@ -22,9 +22,9 @@
 #ifndef _POPUP_H
 #define _POPUP_H
 
-#include "gui.h"
-#include "minimap.h"
-#include "freeserf.h"
+#include "gui.hpp"
+#include "minimap.hpp"
+#include "freeserf.hpp"
 
 
 typedef struct {

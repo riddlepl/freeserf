@@ -19,16 +19,16 @@
  * along with freeserf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "panel.h"
-#include "gui.h"
-#include "viewport.h"
-#include "minimap.h"
-#include "interface.h"
-#include "player.h"
-#include "game.h"
-#include "data.h"
-#include "gfx.h"
-#include "audio.h"
+#include "panel.hpp"
+#include "gui.hpp"
+#include "viewport.hpp"
+#include "minimap.hpp"
+#include "interface.hpp"
+#include "player.hpp"
+#include "game.hpp"
+#include "data.hpp"
+#include "gfx.hpp"
+#include "audio.hpp"
 
 
 /* Draw the frame around action buttons. */

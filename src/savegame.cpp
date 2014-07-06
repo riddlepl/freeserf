@@ -24,11 +24,11 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "game.h"
-#include "map.h"
-#include "version.h"
-#include "list.h"
-#include "debug.h"
+#include "game.hpp"
+#include "map.hpp"
+#include "version.hpp"
+#include "list.hpp"
+#include "debug.hpp"
 
 #define SAVE_MAP_TILE_SIZE   16
 #define SAVE_MAP_TILE_COUNT  (SAVE_MAP_TILE_SIZE*SAVE_MAP_TILE_SIZE)

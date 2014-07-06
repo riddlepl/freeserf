@@ -23,17 +23,17 @@
 #include <assert.h>
 #include <string.h>
 
-#include "popup.h"
-#include "gfx.h"
-#include "data.h"
-#include "viewport.h"
-#include "game.h"
-#include "sdl-video.h"
-#include "audio.h"
-#include "debug.h"
-#include "interface.h"
-#include "viewport.h"
-#include "minimap.h"
+#include "popup.hpp"
+#include "gfx.hpp"
+#include "data.hpp"
+#include "viewport.hpp"
+#include "game.hpp"
+#include "sdl-video.hpp"
+#include "audio.hpp"
+#include "debug.hpp"
+#include "interface.hpp"
+#include "viewport.hpp"
+#include "minimap.hpp"
 
 
 /* Action types that can be fired from

@@ -24,19 +24,19 @@
 #include <stdint.h>
 #include <assert.h>
 
-#include "viewport.h"
-#include "interface.h"
-#include "panel.h"
-#include "gfx.h"
-#include "data.h"
-#include "map.h"
-#include "random.h"
-#include "sdl-video.h"
-#include "game.h"
-#include "misc.h"
-#include "debug.h"
-#include "audio.h"
-#include "pathfinder.h"
+#include "viewport.hpp"
+#include "interface.hpp"
+#include "panel.hpp"
+#include "gfx.hpp"
+#include "data.hpp"
+#include "map.hpp"
+#include "random.hpp"
+#include "sdl-video.hpp"
+#include "game.hpp"
+#include "misc.hpp"
+#include "debug.hpp"
+#include "audio.hpp"
+#include "pathfinder.hpp"
 
 
 #define MAP_TILE_TEXTURES  33

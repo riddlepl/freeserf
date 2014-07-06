@@ -24,7 +24,7 @@
 
 #include <stdint.h>
 
-#include "SDL.h"
+#include "SDL.hpp"
 
 
 #define MAP_TILE_WIDTH   32

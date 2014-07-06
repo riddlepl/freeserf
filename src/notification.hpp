@@ -22,7 +22,7 @@
 #ifndef _NOTIFICATION_H
 #define _NOTIFICATION_H
 
-#include "gui.h"
+#include "gui.hpp"
 
 typedef struct {
 	gui_object_t obj;

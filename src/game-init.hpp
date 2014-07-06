@@ -22,8 +22,8 @@
 #ifndef _GAME_INIT_H
 #define _GAME_INIT_H
 
-#include "gui.h"
-#include "game.h"
+#include "gui.hpp"
+#include "game.hpp"
 
 struct interface;
 

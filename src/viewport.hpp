@@ -22,10 +22,10 @@
 #ifndef _VIEWPORT_H
 #define _VIEWPORT_H
 
-#include "freeserf.h"
-#include "gfx.h"
-#include "gui.h"
-#include "map.h"
+#include "freeserf.hpp"
+#include "gfx.hpp"
+#include "gui.hpp"
+#include "map.hpp"
 
 
 typedef enum {

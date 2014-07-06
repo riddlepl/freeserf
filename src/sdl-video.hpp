@@ -24,9 +24,9 @@
 
 #include <stdint.h>
 
-#include "SDL.h"
+#include "SDL.hpp"
 
-#include "gfx.h"
+#include "gfx.hpp"
 
 
 typedef struct surface surface_t;

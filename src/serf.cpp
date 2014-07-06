@@ -24,12 +24,12 @@
 #include <assert.h>
 
 
-#include "serf.h"
-#include "game.h"
-#include "random.h"
-#include "viewport.h"
-#include "misc.h"
-#include "debug.h"
+#include "serf.hpp"
+#include "game.hpp"
+#include "random.hpp"
+#include "viewport.hpp"
+#include "misc.hpp"
+#include "debug.hpp"
 
 
 static const int counter_from_animation[] = {

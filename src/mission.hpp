@@ -22,7 +22,7 @@
 #ifndef _MISSION_H
 #define _MISSION_H
 
-#include "random.h"
+#include "random.hpp"
 
 typedef struct {
 	random_state_t rnd;

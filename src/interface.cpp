@@ -22,17 +22,17 @@
 #include <time.h>
 #include <assert.h>
 
-#include "interface.h"
-#include "gui.h"
-#include "audio.h"
-#include "viewport.h"
-#include "panel.h"
-#include "game-init.h"
-#include "game.h"
-#include "sdl-video.h"
-#include "data.h"
-#include "debug.h"
-#include "freeserf_endian.h"
+#include "interface.hpp"
+#include "gui.hpp"
+#include "audio.hpp"
+#include "viewport.hpp"
+#include "panel.hpp"
+#include "game-init.hpp"
+#include "game.hpp"
+#include "sdl-video.hpp"
+#include "data.hpp"
+#include "debug.hpp"
+#include "freeserf_endian.hpp"
 
 
 typedef struct {

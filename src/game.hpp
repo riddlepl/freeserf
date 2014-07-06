@@ -22,12 +22,12 @@
 #ifndef _GAME_H
 #define _GAME_H
 
-#include "player.h"
-#include "flag.h"
-#include "serf.h"
-#include "building.h"
-#include "map.h"
-#include "freeserf.h"
+#include "player.hpp"
+#include "flag.hpp"
+#include "serf.hpp"
+#include "building.hpp"
+#include "map.hpp"
+#include "freeserf.hpp"
 
 #define DEFAULT_GAME_SPEED  2
 

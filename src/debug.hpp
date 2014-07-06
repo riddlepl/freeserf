@@ -28,7 +28,7 @@
 
 #include <stdlib.h>
 
-#include "log.h"
+#include "log.hpp"
 
 #ifndef NDEBUG
 # define NOT_REACHED()  do { LOGE("debug", "NOT_REACHED at line %i of %s.", __LINE__, __FILE__); abort(); } while (0)

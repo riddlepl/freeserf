@@ -22,8 +22,8 @@
 #ifndef _PANEL_H
 #define _PANEL_H
 
-#include "gui.h"
-#include "gfx.h"
+#include "gui.hpp"
+#include "gfx.hpp"
 
 typedef struct {
 	gui_object_t obj;

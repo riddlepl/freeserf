@@ -21,17 +21,17 @@
 
 #include <time.h>
 
-#include "SDL.h"
-#include "SDL_mixer.h"
+#include "SDL.hpp"
+#include "SDL_mixer.hpp"
 
-#include "audio.h"
-#include "gfx.h"
-#include "data.h"
-#include "log.h"
-#include "list.h"
-#include "pqueue.h"
-#include "freeserf_endian.h"
-#include "misc.h"
+#include "audio.hpp"
+#include "gfx.hpp"
+#include "data.hpp"
+#include "log.hpp"
+#include "list.hpp"
+#include "pqueue.hpp"
+#include "freeserf_endian.hpp"
+#include "misc.hpp"
 
 
 /* Play sound. */

@@ -22,8 +22,8 @@
 #ifndef _GUI_H
 #define _GUI_H
 
-#include "gfx.h"
-#include "list.h"
+#include "gfx.hpp"
+#include "list.hpp"
 
 #define GUI_OBJECT(obj)     ((gui_object_t *)(obj))
 #define GUI_CONTAINER(obj)  ((gui_container_t *)(obj))

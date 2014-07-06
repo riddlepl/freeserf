@@ -22,8 +22,8 @@
 #ifndef _PATHFINDER_H
 #define _PATHFINDER_H
 
-#include "map.h"
-#include "freeserf.h"
+#include "map.hpp"
+#include "freeserf.hpp"
 
 dir_t *pathfinder_map(map_pos_t start, map_pos_t end, uint *length);
 

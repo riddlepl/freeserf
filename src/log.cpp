@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "log.h"
+#include "log.hpp"
 
 static log_level_t log_level = LOG_LEVEL_DEBUG;
 static FILE *log_file = NULL;

@@ -19,7 +19,7 @@
  * along with freeserf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "version.h"
+#include "version.hpp"
 #include <version-vcs.h>
 
 const char FREESERF_VERSION[] = VERSION_VCS;

@@ -19,7 +19,7 @@
  * along with freeserf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "data.h"
+#include "data.hpp"
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -37,8 +37,8 @@
 # include <sys/mman.h>
 #endif
 
-#include "freeserf_endian.h"
-#include "log.h"
+#include "freeserf_endian.hpp"
+#include "log.hpp"
 
 /* There are different types of sprites:
  - Non-packed, rectangular sprites: These are simple called sprites here.

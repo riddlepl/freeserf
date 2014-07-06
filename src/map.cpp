@@ -42,11 +42,11 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "map.h"
-#include "game.h"
-#include "random.h"
-#include "misc.h"
-#include "debug.h"
+#include "map.hpp"
+#include "game.hpp"
+#include "random.hpp"
+#include "misc.hpp"
+#include "debug.hpp"
 
 
 /* Map map_obj_t to map_space_t. */

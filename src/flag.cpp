@@ -23,12 +23,12 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "flag.h"
-#include "building.h"
-#include "player.h"
-#include "game.h"
-#include "list.h"
-#include "misc.h"
+#include "flag.hpp"
+#include "building.hpp"
+#include "player.hpp"
+#include "game.hpp"
+#include "list.hpp"
+#include "misc.hpp"
 
 #define SEARCH_MAX_DEPTH  0x10000
 

@@ -25,8 +25,8 @@
 
 #include <stdint.h>
 
-#include "map.h"
-#include "freeserf.h"
+#include "map.hpp"
+#include "freeserf.hpp"
 
 /* Max number of different types of resources accepted by buildings. */
 #define BUILDING_MAX_STOCK  2

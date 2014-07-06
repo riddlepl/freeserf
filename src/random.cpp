@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "random.h"
+#include "random.hpp"
 
 uint16_t
 random_int(random_state_t *random)

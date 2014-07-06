@@ -19,11 +19,11 @@
  * along with freeserf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "map.h"
-#include "pqueue.h"
-#include "list.h"
-#include "game.h"
-#include "freeserf.h"
+#include "map.hpp"
+#include "pqueue.hpp"
+#include "list.hpp"
+#include "game.hpp"
+#include "freeserf.hpp"
 
 typedef struct search_node search_node_t;
 

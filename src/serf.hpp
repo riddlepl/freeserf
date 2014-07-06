@@ -26,9 +26,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "map.h"
-#include "misc.h"
-#include "log.h"
+#include "map.hpp"
+#include "misc.hpp"
+#include "log.hpp"
 
 #define SERF_INDEX(ptr)    ((int)((ptr) - game.serfs))
 #define SERF_ALLOCATED(i)  BIT_TEST(game.serf_bitmap[(i)>>3], 7-((i)&7))

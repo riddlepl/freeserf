@@ -22,7 +22,7 @@
 #ifndef _PQUEUE_H
 #define _PQUEUE_H
 
-#include "misc.h"
+#include "misc.hpp"
 
 /* Return non-zero if e1 comes before e2. */
 typedef int pqueue_less_func(const void *e1, const void *e2);

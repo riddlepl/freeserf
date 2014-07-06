@@ -19,14 +19,14 @@
  * along with freeserf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "notification.h"
-#include "gfx.h"
-#include "gui.h"
-#include "interface.h"
-#include "game.h"
-#include "building.h"
-#include "data.h"
-#include "debug.h"
+#include "notification.hpp"
+#include "gfx.hpp"
+#include "gui.hpp"
+#include "interface.hpp"
+#include "game.hpp"
+#include "building.hpp"
+#include "data.hpp"
+#include "debug.hpp"
 
 
 static void

@@ -21,8 +21,8 @@
 
 #include <stdlib.h>
 
-#include "pqueue.h"
-#include "misc.h"
+#include "pqueue.hpp"
+#include "misc.hpp"
 
 /* Initialize priority queue. */
 int

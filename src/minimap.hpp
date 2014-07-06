@@ -22,8 +22,8 @@
 #ifndef _MINIMAP_H
 #define _MINIMAP_H
 
-#include "gui.h"
-#include "map.h"
+#include "gui.hpp"
+#include "map.hpp"
 
 typedef struct {
 	gui_object_t obj;

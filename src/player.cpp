@@ -23,10 +23,10 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "player.h"
-#include "freeserf.h"
-#include "game.h"
-#include "debug.h"
+#include "player.hpp"
+#include "freeserf.hpp"
+#include "game.hpp"
+#include "debug.hpp"
 
 
 /* Enqueue a new notification message for player. */

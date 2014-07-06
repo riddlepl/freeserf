@@ -19,8 +19,8 @@
  * along with freeserf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "mission.h"
-#include "random.h"
+#include "mission.hpp"
+#include "random.hpp"
 
 const mission_t mission[] = {
 	{

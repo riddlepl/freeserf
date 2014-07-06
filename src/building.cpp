@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "building.h"
+#include "building.hpp"
 
 
 int

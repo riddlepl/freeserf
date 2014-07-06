@@ -26,9 +26,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "freeserf.h"
-#include "map.h"
-#include "gfx.h"
+#include "freeserf.hpp"
+#include "map.hpp"
+#include "gfx.hpp"
 
 
 /* Whether player has built the initial castle. */

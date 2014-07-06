@@ -23,9 +23,9 @@
 # include <config.h>
 #endif
 
-#include "sdl-video.h"
-#include "gfx.h"
-#include "data.h"
+#include "sdl-video.hpp"
+#include "gfx.hpp"
+#include "data.hpp"
 
 /* There are different types of sprites:
    - Non-packed, rectangular sprites: These are simple called sprites here.

@@ -21,11 +21,11 @@
 
 #include <stdlib.h>
 
-#include "gui.h"
-#include "gfx.h"
-#include "sdl-video.h"
-#include "list.h"
-#include "misc.h"
+#include "gui.hpp"
+#include "gfx.hpp"
+#include "sdl-video.hpp"
+#include "list.hpp"
+#include "misc.hpp"
 
 
 /* Get the resulting value from a click on a slider bar. */

@@ -22,10 +22,10 @@
 #ifndef _FLAG_H
 #define _FLAG_H
 
-#include "freeserf.h"
-#include "list.h"
-#include "map.h"
-#include "building.h"
+#include "freeserf.hpp"
+#include "list.hpp"
+#include "map.hpp"
+#include "building.hpp"
 
 /* Max number of resources waiting at a flag */
 #define FLAG_MAX_RES_COUNT  8

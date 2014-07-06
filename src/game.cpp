@@ -27,16 +27,16 @@
 #include <assert.h>
 #include <string.h>
 
-#include "game.h"
-#include "map.h"
-#include "player.h"
-#include "flag.h"
-#include "building.h"
-#include "mission.h"
-#include "random.h"
-#include "log.h"
-#include "savegame.h"
-#include "debug.h"
+#include "game.hpp"
+#include "map.hpp"
+#include "player.hpp"
+#include "flag.hpp"
+#include "building.hpp"
+#include "mission.hpp"
+#include "random.hpp"
+#include "log.hpp"
+#include "savegame.hpp"
+#include "debug.hpp"
 
 #define GROUND_ANALYSIS_RADIUS  25
 

@@ -21,13 +21,13 @@
 
 #include <time.h>
 
-#include "game-init.h"
-#include "interface.h"
+#include "game-init.hpp"
+#include "interface.hpp"
 
-#include "game.h"
-#include "mission.h"
-#include "data.h"
-#include "gfx.h"
+#include "game.hpp"
+#include "mission.hpp"
+#include "data.hpp"
+#include "gfx.hpp"
 
 
 typedef enum {

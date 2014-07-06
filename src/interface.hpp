@@ -22,16 +22,16 @@
 #ifndef _INTERFACE_H
 #define _INTERFACE_H
 
-#include "gui.h"
-#include "viewport.h"
-#include "building.h"
-#include "panel.h"
-#include "game-init.h"
-#include "notification.h"
-#include "list.h"
-#include "popup.h"
-#include "player.h"
-#include "random.h"
+#include "gui.hpp"
+#include "viewport.hpp"
+#include "building.hpp"
+#include "panel.hpp"
+#include "game-init.hpp"
+#include "notification.hpp"
+#include "list.hpp"
+#include "popup.hpp"
+#include "player.hpp"
+#include "random.hpp"
 
 #define MAX_ROAD_LENGTH  256
 

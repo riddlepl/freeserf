@@ -25,15 +25,15 @@
 #include <string.h>
 #include <signal.h>
 
-#include "SDL.h"
+#include "SDL.hpp"
 
-#include "freeserf_endian.h"
-#include "sdl-video.h"
-#include "gfx.h"
-#include "misc.h"
-#include "version.h"
-#include "log.h"
-#include "data.h"
+#include "freeserf_endian.hpp"
+#include "sdl-video.hpp"
+#include "gfx.hpp"
+#include "misc.hpp"
+#include "version.hpp"
+#include "log.hpp"
+#include "data.hpp"
 
 
 static SDL_Window *window;
