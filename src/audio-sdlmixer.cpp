@@ -21,8 +21,8 @@
 
 #include <time.h>
 
-#include "SDL.hpp"
-#include "SDL_mixer.hpp"
+#include <SDL.h>
+#include <SDL_mixer.h>
 
 #include "audio.hpp"
 #include "gfx.hpp"
@@ -150,7 +150,7 @@ sfx_produce_wav(char* data, uint32_t size, size_t *new_size)
 
 	*new_size = 44 + size*2;
 
-	char *result = malloc(*new_size);
+    char *result = new char[*new_size];
 	if (result == NULL) abort();
 
 	char *current = result;
@@ -198,14 +198,14 @@ sfx_play_clip(sfx_t sfx)
 	}
 
 	if (NULL == audio_clip) {
-		audio_clip = malloc(sizeof(audio_clip_t));
+        audio_clip = new audio_clip_t;
 		if (audio_clip == NULL) abort();
 		audio_clip->num = sfx;
 
 		size_t size = 0;
-		char *data = data_get_object(DATA_SFX_BASE + sfx, &size);
+        sprite_t* data = data_get_object(DATA_SFX_BASE + sfx, &size);
 
-		char *wav = sfx_produce_wav(data, (int)size, &size);
+        char *wav = sfx_produce_wav(reinterpret_cast<char*>(data), (int)size, &size);
 
 		SDL_RWops *rw = SDL_RWFromMem(wav, (int)size);
 		audio_clip->chunk = Mix_LoadWAV_RW(rw, 0);
@@ -399,7 +399,7 @@ xmi_process_EVNT(char *data, int length, midi_file_t *midi)
 		READ_DATA(type);
 
 		if (type & 0x80) {
-			midi_node_t *node = malloc(sizeof(midi_node_t));
+            midi_node_t *node = new midi_node_t;
 			if (node == NULL) abort();
 
 			node->time = time;
@@ -419,7 +419,7 @@ xmi_process_EVNT(char *data, int length, midi_file_t *midi)
 					uint8_t data1 = node->data1;
 					pqueue_insert(&midi->nodes, node);
 
-					node = malloc(sizeof(midi_node_t));
+                    node = new midi_node_t;
 					if (node == NULL) abort();
 
 					node->type = type;
@@ -485,7 +485,7 @@ xmi_process_EVNT(char *data, int length, midi_file_t *midi)
 static void
 midi_grow(midi_file_t *midi, uint8_t **current)
 {
-	uint8_t *data = malloc(midi->size + 1024);
+    uint8_t *data = new uint8_t[midi->size + 1024];
 	if (data == NULL) abort();
 
 	Uint64 pos = *current - midi->data;
@@ -545,7 +545,7 @@ midi_produce(midi_file_t *midi, size_t *size)
 	int i = 0;
 	while (!pqueue_is_empty(&midi->nodes)) {
 		i++;
-		midi_node_t *node = pqueue_pop(&midi->nodes);
+        midi_node_t *node = static_cast<midi_node_t*>(pqueue_pop(&midi->nodes));
 		midi_write_variable_size(midi, &current, node->time - time);
 		time = node->time;
 		WRITE_BYTE(node->type);
@@ -591,13 +591,13 @@ midi_play_track(midi_t midi)
 	current_track = midi;
 
 	if (NULL == track) {
-		track = (track_t *)malloc(sizeof(track_t));
+        track = new track_t;
 		if (track == NULL) abort();
 
 		track->num = midi;
 
 		size_t size = 0;
-		char *data = data_get_object(DATA_MUSIC_GAME + midi, &size);
+        char *data = reinterpret_cast<char*>(data_get_object(DATA_MUSIC_GAME + midi, &size));
 		if (NULL == data) {
 			free(track);
 			return;
@@ -611,7 +611,7 @@ midi_play_track(midi_t midi)
 		midi_file.size = 0;
 
 		xmi_process_subchunks(data, (int)size, &midi_file);
-		data = midi_produce(&midi_file, &size);
+        data = static_cast<char*>(midi_produce(&midi_file, &size));
 
 		pqueue_deinit(&midi_file.nodes);
 

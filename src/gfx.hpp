@@ -24,7 +24,7 @@
 
 #include <stdint.h>
 
-#include "SDL.hpp"
+#include <SDL.h>
 
 
 #define MAP_TILE_WIDTH   32
@@ -39,14 +39,15 @@ typedef struct {
 } frame_t;
 
 /* Sprite header. In the data file this is immediately followed by sprite data. */
-typedef struct {
+struct sprite_t
+{
 	int8_t b_x;
 	int8_t b_y;
 	uint16_t w;
 	uint16_t h;
 	int16_t x;
 	int16_t y;
-} sprite_t;
+} ;
 
 
 void gfx_draw_string(int x, int y, int color, int shadow, frame_t *dest, const char *str);

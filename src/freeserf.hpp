@@ -40,7 +40,7 @@
 #define INVENTORY_INDEX(ptr)  ((int)((ptr) - game.inventories))
 #define INVENTORY_ALLOCATED(i)  BIT_TEST(game.inventory_bitmap[(i)>>3], 7-((i)&7))
 
-#define DIR_REVERSE(dir)  (((dir) + 3) % 6)
+#define DIR_REVERSE(dir)  static_cast<dir_t>((((dir) + 3) % 6))
 
 
 typedef enum {
@@ -86,7 +86,8 @@ typedef enum {
 	PANEL_BTN_BUILD_ROAD_STARRED
 } panel_btn_t;
 
-typedef enum {
+enum box_t
+{
 	BOX_MAP = 1,
 	BOX_MAP_OVERLAY, /* UNUSED */
 	BOX_MINE_BUILDING,
@@ -147,7 +148,7 @@ typedef enum {
 	BOX_JS_CALIB_DOWNRIGHT,
 	BOX_JS_CALIB_CENTER,
 	BOX_CTRLS_INFO
-} box_t;
+};
 
 typedef enum {
 	RESOURCE_NONE = -1,

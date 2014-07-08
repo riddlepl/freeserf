@@ -175,7 +175,7 @@ draw_minimap_grid(minimap_t *minimap, frame_t *frame)
 static void
 draw_minimap_rect(minimap_t *minimap, frame_t *frame)
 {
-	void *sprite = data_get_object(354, NULL);
+    sprite_t *sprite = data_get_object(354, NULL);
 	int y = minimap->obj.height/2;
 	int x = minimap->obj.width/2;
 	sdl_draw_transp_sprite(sprite, x, y, 1, 0, 0, frame);
@@ -268,7 +268,7 @@ minimap_handle_event(minimap_t *minimap, const gui_event_t *event)
 		break;
 	case GUI_EVENT_TYPE_DRAG_MOVE:
 		return minimap_handle_drag(minimap, x, y,
-					   event->button);
+                       static_cast<gui_event_button_t>(event->button));
 	case GUI_EVENT_TYPE_DRAG_START:
 		minimap->interface->cursor_lock_target = (gui_object_t *)minimap;
 		return 0;

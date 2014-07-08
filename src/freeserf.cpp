@@ -445,7 +445,7 @@ game_loop()
 
 					/* Debug */
 				case SDLK_g:
-					interface.viewport.layers ^= VIEWPORT_LAYER_GRID;
+                    interface.viewport.layers = static_cast<viewport_layer_t>(interface.viewport.layers ^ VIEWPORT_LAYER_GRID);
 					break;
 				case SDLK_b:
 					interface.viewport.show_possible_build = !interface.viewport.show_possible_build;
@@ -709,7 +709,7 @@ main(int argc, char *argv[])
 			fullscreen = 1;
 			break;
 		case 'g':
-			data_file = malloc(strlen(optarg)+1);
+            data_file = new char[strlen(optarg)+1];
 			if (data_file == NULL) exit(EXIT_FAILURE);
 			strcpy(data_file, optarg);
 			break;
@@ -718,7 +718,7 @@ main(int argc, char *argv[])
 			exit(EXIT_SUCCESS);
 			break;
 		case 'l':
-			save_file = malloc(strlen(optarg)+1);
+            save_file = new char[strlen(optarg)+1];
 			if (save_file == NULL) exit(EXIT_FAILURE);
 			strcpy(save_file, optarg);
 			break;
@@ -745,7 +745,7 @@ main(int argc, char *argv[])
 
 	/* Set up logging */
 	log_set_file(stdout);
-	log_set_level(log_level);
+    log_set_level(static_cast<log_level_t>(log_level));
 
 	LOGI("main", "freeserf %s", FREESERF_VERSION);
 
@@ -775,7 +775,7 @@ main(int argc, char *argv[])
 	r = sdl_set_resolution(screen_width, screen_height, fullscreen);
 	if (r < 0) exit(EXIT_FAILURE);
 
-	sdl_set_cursor(data_get_object(DATA_CURSOR, NULL));
+    sdl_set_cursor(data_get_object(DATA_CURSOR, NULL));
 
 	game.map_generator = map_generator;
 

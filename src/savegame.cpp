@@ -50,7 +50,7 @@ load_v0_map_pos(const v0_map_t *map, uint32_t value)
 static int
 load_v0_game_state(FILE *f, v0_map_t *map)
 {
-	uint8_t *data = malloc(210);
+    uint8_t *data = new uint8_t[210];
 	if (data == NULL) return -1;
 
 	size_t rd = fread(data, sizeof(uint8_t), 210, f);
@@ -217,7 +217,7 @@ load_v0_player_state(FILE *f)
 		64, 72, 68, 76
 	};
 
-	uint8_t *data = malloc(8628);
+    uint8_t *data = new uint8_t[8628];
 	if (data == NULL) return -1;
 
 	for (int i = 0; i < 4; i++) {
@@ -229,7 +229,7 @@ load_v0_player_state(FILE *f)
 
 		if (!BIT_TEST(data[130], 6)) continue;;
 
-		game.player[i] = calloc(1, sizeof(player_t));
+        game.player[i] = new player_t[1];
 		if (game.player[i] == NULL) {
 			free(data);
 			return -1;
@@ -344,7 +344,7 @@ load_v0_map_state(FILE *f, const v0_map_t *map)
 {
 	uint tile_count = map->cols*map->rows;
 
-	uint8_t *data = malloc(8*tile_count);
+    uint8_t *data = new uint8_t[8*tile_count];
 	if (data == NULL) return -1;
 
 	size_t rd = fread(data, sizeof(uint8_t), 8*tile_count, f);
@@ -390,7 +390,7 @@ load_v0_serf_state(FILE *f, const v0_map_t *map)
 {
 	/* Load serf bitmap. */
 	int bitmap_size = 4*((game.max_serf_index + 31)/32);
-	uint8_t *bitmap = malloc(bitmap_size);
+    uint8_t *bitmap = new uint8_t[bitmap_size];
 	if (bitmap == NULL) return -1;
 
 	size_t rd = fread(bitmap, sizeof(uint8_t), bitmap_size, f);
@@ -405,7 +405,7 @@ load_v0_serf_state(FILE *f, const v0_map_t *map)
 	free(bitmap);
 
 	/* Load serf data. */
-	uint8_t *data = malloc(16*game.max_serf_index);
+    uint8_t *data = new uint8_t[16 * game.max_serf_index];
 	if (data == NULL) return -1;
 
 	rd = fread(data, 16*sizeof(uint8_t), game.max_serf_index, f);
@@ -423,7 +423,7 @@ load_v0_serf_state(FILE *f, const v0_map_t *map)
 		serf->counter = *(uint16_t *)&serf_data[2];
 		serf->pos = load_v0_map_pos(map, *(uint32_t *)&serf_data[4]);
 		serf->tick = *(uint16_t *)&serf_data[8];
-		serf->state = serf_data[10];
+        serf->state = static_cast<serf_state_t>(serf_data[10]);
 
 		LOGV("savegame", "load serf %i: %s", i, serf_get_state_name(serf->state));
 
@@ -452,7 +452,7 @@ load_v0_serf_state(FILE *f, const v0_map_t *map)
 			serf->s.leaving_building.dest = *(int8_t *)&serf_data[12];
 			serf->s.leaving_building.dest2 = *(int8_t *)&serf_data[13];
 			serf->s.leaving_building.dir = *(int8_t *)&serf_data[14];
-			serf->s.leaving_building.next_state = serf_data[15];
+            serf->s.leaving_building.next_state = static_cast<serf_state_t>(serf_data[15]);
 			break;
 
 		case SERF_STATE_READY_TO_ENTER:
@@ -481,7 +481,7 @@ load_v0_serf_state(FILE *f, const v0_map_t *map)
 		case SERF_STATE_DROP_RESOURCE_OUT:
 			serf->s.move_resource_out.res = serf_data[11];
 			serf->s.move_resource_out.res_dest = *(uint16_t *)&serf_data[12];
-			serf->s.move_resource_out.next_state = serf_data[15];
+            serf->s.move_resource_out.next_state = static_cast<serf_state_t>(serf_data[15]);
 			break;
 
 		case SERF_STATE_READY_TO_LEAVE_INVENTORY:
@@ -516,7 +516,7 @@ load_v0_serf_state(FILE *f, const v0_map_t *map)
 		case SERF_STATE_MINING:
 			serf->s.mining.substate = serf_data[11];
 			serf->s.mining.res = serf_data[13];
-			serf->s.mining.deposit = serf_data[14];
+            serf->s.mining.deposit = static_cast<ground_deposit_t>(serf_data[14]);
 			break;
 
 		case SERF_STATE_SMELTING:
@@ -591,7 +591,7 @@ load_v0_flag_state(FILE *f)
 {
 	/* Load flag bitmap. */
 	int bitmap_size = 4*((game.max_flag_index + 31)/32);
-	uint8_t *flag_bitmap = malloc(bitmap_size);
+    uint8_t *flag_bitmap = new uint8_t[bitmap_size];
 	if (flag_bitmap == NULL) return -1;
 
 	size_t rd = fread(flag_bitmap, sizeof(uint8_t), bitmap_size, f);
@@ -606,7 +606,7 @@ load_v0_flag_state(FILE *f)
 	free(flag_bitmap);
 
 	/* Load flag data. */
-	uint8_t *data = malloc(70*game.max_flag_index);
+    uint8_t *data = new uint8_t[70 * game.max_flag_index];
 	if (data == NULL) return -1;
 
 	rd = fread(data, 70*sizeof(uint8_t), game.max_flag_index, f);
@@ -621,7 +621,7 @@ load_v0_flag_state(FILE *f)
 
 		flag->pos = MAP_POS(0, 0); /* Set correctly later. */
 		flag->search_num = *(uint16_t *)&flag_data[0];
-		flag->search_dir = flag_data[2];
+        flag->search_dir = static_cast<dir_t>(flag_data[2]);
 		flag->path_con = flag_data[3];
 		flag->endpoint = flag_data[4];
 		flag->transporter = flag_data[5];
@@ -631,8 +631,8 @@ load_v0_flag_state(FILE *f)
 		}
 
 		for (int j = 0; j < 8; j++) {
-			flag->slot[j].type = (flag_data[12+j] & 0x1f)-1;
-			flag->slot[j].dir = ((flag_data[12+j] >> 5) & 7)-1;
+            flag->slot[j].type = static_cast<resource_type_t>((flag_data[12+j] & 0x1f)-1);
+            flag->slot[j].dir = static_cast<dir_t>(((flag_data[12+j] >> 5) & 7)-1);
 			flag->slot[j].dest = *(uint16_t *)&flag_data[20+2*j];
 		}
 
@@ -679,7 +679,7 @@ load_v0_building_state(FILE *f, const v0_map_t *map)
 {
 	/* Load building bitmap. */
 	int bitmap_size = 4*((game.max_building_index + 31)/32);
-	uint8_t *bitmap = malloc(bitmap_size);
+    uint8_t *bitmap = new uint8_t[bitmap_size];
 	if (bitmap == NULL) return -1;
 
 	size_t rd = fread(bitmap, sizeof(uint8_t), bitmap_size, f);
@@ -694,7 +694,7 @@ load_v0_building_state(FILE *f, const v0_map_t *map)
 	free(bitmap);
 
 	/* Load building data. */
-	uint8_t *data = malloc(18*game.max_building_index);
+    uint8_t *data = new uint8_t[18 * game.max_building_index];
 	if (data == NULL) return -1;
 
 	rd = fread(data, 18*sizeof(uint8_t), game.max_building_index, f);
@@ -708,7 +708,7 @@ load_v0_building_state(FILE *f, const v0_map_t *map)
 		building_t *building = &game.buildings[i];
 
 		building->pos = load_v0_map_pos(map, *(uint32_t *)&building_data[0]);
-		building->type = (building_data[4] >> 2) & 0x1f;
+        building->type = static_cast<building_type_t>((building_data[4] >> 2) & 0x1f);
 		building->bld = building_data[4] & 0x83;
 		building->serf = building_data[5];
 		building->flag = *(uint16_t *)&building_data[6];
@@ -828,7 +828,7 @@ load_v0_inventory_state(FILE *f)
 {
 	/* Load inventory bitmap. */
 	int bitmap_size = 4*((game.max_inventory_index + 31)/32);
-	uint8_t *bitmap = malloc(bitmap_size);
+    uint8_t *bitmap = new uint8_t[bitmap_size];
 	if (bitmap == NULL) return -1;
 
 	size_t rd = fread(bitmap, sizeof(uint8_t), bitmap_size, f);
@@ -843,7 +843,7 @@ load_v0_inventory_state(FILE *f)
 	free(bitmap);
 
 	/* Load inventory data. */
-	uint8_t *data = malloc(120*game.max_inventory_index);
+    uint8_t *data = new uint8_t[120 * game.max_inventory_index];
 	if (data == NULL) return -1;
 
 	rd = fread(data, 120*sizeof(uint8_t), game.max_inventory_index, f);
@@ -866,7 +866,7 @@ load_v0_inventory_state(FILE *f)
 		}
 
 		for (int j = 0; j < 2; j++) {
-			inventory->out_queue[j].type = inventory_data[58+j]-1;
+            inventory->out_queue[j].type = static_cast<resource_type_t>(inventory_data[58+j]-1);
 			inventory->out_queue[j].dest = *(uint16_t *)&inventory_data[60+2*j];
 		}
 
@@ -1105,7 +1105,7 @@ save_text_flag_state(FILE *f)
 			save_text_write_array(f, "slot.dest", values, FLAG_MAX_RES_COUNT);
 
 			int indices[6];
-			for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+            for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 				if (FLAG_HAS_PATH(flag, d)) {
 					indices[d] = FLAG_INDEX(flag->other_endpoint.f[d]);
 				} else {
@@ -1196,7 +1196,7 @@ save_text_inventory_state(FILE *f)
 
 			resource_type_t types[2];
 			for (int i = 0; i < 2; i++) types[i] = inventory->out_queue[i].type;
-			save_text_write_array(f, "queue.type", types, 2);
+            save_text_write_array(f, "queue.type", reinterpret_cast<int*>(types), 2);
 
 			int dests[2];
 			for (int i = 0; i < 2; i++) dests[i] = inventory->out_queue[i].dest;
@@ -1539,7 +1539,7 @@ load_text_readline(char **buffer, size_t *len, FILE *f)
 			/* Double buffer size, always keep enough
 			   space for input character plus zero-byte. */
 			*len = 2*(*len);
-			*buffer = realloc(*buffer, *len);
+            *buffer = static_cast<char*>(realloc(*buffer, *len));
 		}
 
 		/* Read character */
@@ -1579,7 +1579,7 @@ static int
 load_text_parse(FILE *f, list_t *sections)
 {
 	size_t buffer_len = 256;
-	char *buffer = malloc(buffer_len*sizeof(char));
+    char *buffer = new char[buffer_len];
 
 	section_t *section = NULL;
 
@@ -1631,7 +1631,7 @@ load_text_parse(FILE *f, list_t *sections)
 			}
 
 			/* Create section */
-			section = malloc(sizeof(section_t));
+            section = new section_t;
 			if (section == NULL) abort();
 
 			section->name = strdup(header);
@@ -1656,7 +1656,7 @@ load_text_parse(FILE *f, list_t *sections)
 			value += 1;
 			while (isspace(value[0])) value += 1;
 
-			setting_t *setting = malloc(sizeof(setting_t));
+            setting_t *setting = new setting_t;
 			if (setting == NULL) abort();
 
 			setting->key = strdup(key);
@@ -1858,7 +1858,7 @@ load_text_player_section(section_t *section)
 	int n = atoi(section->param);
 	if (n < 0 || n >= GAME_MAX_PLAYER_COUNT) return -1;
 
-	game.player[n] = calloc(1, sizeof(player_t));
+    game.player[n] = new player_t[1];
 	if (game.player[n] == NULL) return -1;
 
 	player_t *player = game.player[n];
@@ -2040,7 +2040,7 @@ load_text_flag_section(section_t *section)
 		} else if (!strcmp(s->key, "search_num")) {
 			flag->search_num = atoi(s->value);
 		} else if (!strcmp(s->key, "search_dir")) {
-			flag->search_dir = atoi(s->value);
+            flag->search_dir = static_cast<dir_t>(atoi(s->value));
 		} else if (!strcmp(s->key, "path_con")) {
 			flag->path_con = atoi(s->value);
 		} else if (!strcmp(s->key, "endpoints")) {
@@ -2057,13 +2057,13 @@ load_text_flag_section(section_t *section)
 			char *array = s->value;
 			for (int i = 0; i < 8 && array != NULL; i++) {
 				char *v = parse_array_value(&array);
-				flag->slot[i].type = atoi(v);
+                flag->slot[i].type = static_cast<resource_type_t>(atoi(v));
 			}
 		} else if (!strcmp(s->key, "slot.dir")) {
 			char *array = s->value;
 			for (int i = 0; i < 8 && array != NULL; i++) {
 				char *v = parse_array_value(&array);
-				flag->slot[i].dir = atoi(v);
+                flag->slot[i].dir = static_cast<dir_t>(atoi(v));
 			}
 		} else if (!strcmp(s->key, "slot.dest")) {
 			char *array = s->value;
@@ -2098,7 +2098,7 @@ load_text_flag_section(section_t *section)
 	if (FLAG_HAS_BUILDING(flag)) {
 		char *array = load_text_get_setting(section, "other_endpoint");
 		char *v = NULL;
-		for (dir_t d = DIR_RIGHT; d <= DIR_UP_LEFT && array != NULL; d++) {
+        for (int d = DIR_RIGHT; d <= DIR_UP_LEFT && array != NULL; d++) {
 			char *r = parse_array_value(&array);
 			if (d == DIR_UP_LEFT) v = r;
 		}
@@ -2153,7 +2153,7 @@ load_text_building_section(section_t *section)
 		if (!strcmp(s->key, "pos")) {
 			building->pos = parse_map_pos(s->value);
 		} else if (!strcmp(s->key, "type")) {
-			building->type = atoi(s->value);
+            building->type = static_cast<building_type_t>(atoi(s->value));
 		} else if (!strcmp(s->key, "bld")) {
 			building->bld = atoi(s->value);
 		} else if (!strcmp(s->key, "serf")) {
@@ -2161,7 +2161,7 @@ load_text_building_section(section_t *section)
 		} else if (!strcmp(s->key, "flag")) {
 			building->flag = atoi(s->value);
 		} else if (!strcmp(s->key, "stock[0].type")) {
-			building->stock[0].type = atoi(s->value);
+            building->stock[0].type = static_cast<resource_type_t>(atoi(s->value));
 		} else if (!strcmp(s->key, "stock[0].prio")) {
 			building->stock[0].prio = atoi(s->value);
 		} else if (!strcmp(s->key, "stock[0].available")) {
@@ -2171,7 +2171,7 @@ load_text_building_section(section_t *section)
 		} else if (!strcmp(s->key, "stock[0].maximum")) {
 			building->stock[0].maximum = atoi(s->value);
 		} else if (!strcmp(s->key, "stock[1].type")) {
-			building->stock[1].type = atoi(s->value);
+            building->stock[1].type = static_cast<resource_type_t>(atoi(s->value));
 		} else if (!strcmp(s->key, "stock[1].prio")) {
 			building->stock[1].prio = atoi(s->value);
 		} else if (!strcmp(s->key, "stock[1].available")) {
@@ -2270,7 +2270,7 @@ load_text_inventory_section(section_t *section)
 			char *array = s->value;
 			for (int i = 0; i < 2 && array != NULL; i++) {
 				char *v = parse_array_value(&array);
-				inventory->out_queue[i].type = atoi(v);
+                inventory->out_queue[i].type = static_cast<resource_type_t>(atoi(v));
 			}
 		} else if (!strcmp(s->key, "queue.dest")) {
 			char *array = s->value;
@@ -2347,7 +2347,7 @@ load_text_serf_section(section_t *section)
 		} else if (!strcmp(s->key, "tick")) {
 			serf->tick = atoi(s->value);
 		} else if (!strcmp(s->key, "state")) {
-			serf->state = atoi(s->value);
+            serf->state = static_cast<serf_state_t>(atoi(s->value));
 		} else if (!strncmp(s->key, "state.", strlen("state."))) {
 			/* Handled later */
 		} else {
@@ -2399,7 +2399,7 @@ load_text_serf_section(section_t *section)
 			} else if (!strcmp(s->key, "state.dir")) {
 				serf->s.leaving_building.dir = atoi(s->value);
 			} else if (!strcmp(s->key, "state.next_state")) {
-				serf->s.leaving_building.next_state = atoi(s->value);
+                serf->s.leaving_building.next_state = static_cast<serf_state_t>(atoi(s->value));
 			}
 			break;
 
@@ -2446,7 +2446,7 @@ load_text_serf_section(section_t *section)
 			} else if (!strcmp(s->key, "state.res_dest")) {
 				serf->s.move_resource_out.res_dest = atoi(s->value);
 			} else if (!strcmp(s->key, "state.next_state")) {
-				serf->s.move_resource_out.next_state = atoi(s->value);
+                serf->s.move_resource_out.next_state = static_cast<serf_state_t>(atoi(s->value));
 			}
 			break;
 
@@ -2502,7 +2502,7 @@ load_text_serf_section(section_t *section)
 			} else if (!strcmp(s->key, "state.res")) {
 				serf->s.mining.res = atoi(s->value);
 			} else if (!strcmp(s->key, "state.deposit")) {
-				serf->s.mining.deposit = atoi(s->value);
+                serf->s.mining.deposit = static_cast<ground_deposit_t>(atoi(s->value));
 			}
 			break;
 
@@ -2603,7 +2603,7 @@ load_text_serf_section(section_t *section)
 			} else if (!strcmp(s->key, "state.field_E")) {
 				serf->s.leave_for_walk_to_fight.field_E = atoi(s->value);
 			} else if (!strcmp(s->key, "state.next_state")) {
-				serf->s.leave_for_walk_to_fight.next_state = atoi(s->value);
+                serf->s.leave_for_walk_to_fight.next_state = static_cast<serf_state_t>(atoi(s->value));
 			}
 			break;
 

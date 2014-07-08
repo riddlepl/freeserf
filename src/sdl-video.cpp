@@ -25,7 +25,7 @@
 #include <string.h>
 #include <signal.h>
 
-#include "SDL.hpp"
+#include "SDL.h"
 
 #include "freeserf_endian.hpp"
 #include "sdl-video.hpp"
@@ -109,7 +109,7 @@ static int
 surface_ht_init(surface_ht_t *ht, size_t size)
 {
 	ht->size = size;
-	ht->entries = calloc(size, sizeof(surface_ht_entry_t *));
+    ht->entries = new surface_ht_entry_t*[size];
 	if (ht->entries == NULL) return -1;
 
 	ht->entry_count = 0;
@@ -137,7 +137,7 @@ surface_ht_store(surface_ht_t *ht, const surface_id_t *id)
 		}
 	}
 
-	surface_ht_entry_t *new_entry = calloc(1, sizeof(surface_ht_entry_t));
+    surface_ht_entry_t *new_entry = new surface_ht_entry_t[1];
 	if (new_entry == NULL) return NULL;
 
 	ht->entry_count += 1;
@@ -386,7 +386,7 @@ create_transp_surface(const sprite_t *sprite, int offset)
 
 	/* Unpack */
 	size_t unpack_size = width * height;
-	uint8_t *unpack = calloc(unpack_size, sizeof(uint8_t));
+    uint8_t *unpack = new uint8_t[unpack_size];
 	if (unpack == NULL) abort();
 
 	data_unpack_transparent_sprite(unpack, data, unpack_size, offset);
@@ -410,7 +410,7 @@ create_masked_transp_surface(const sprite_t *sprite, const sprite_t *mask, int m
 
 	/* Unpack */
 	size_t unpack_size = s_width * s_height;
-	uint8_t *unpack = calloc(unpack_size, sizeof(uint8_t));
+    uint8_t *unpack = new uint8_t[unpack_size];
 	if (unpack == NULL) abort();
 
 	data_unpack_transparent_sprite(unpack, s_data, unpack_size, 0);
@@ -418,7 +418,7 @@ create_masked_transp_surface(const sprite_t *sprite, const sprite_t *mask, int m
 	size_t m_width = le16toh(mask->w);
 	size_t m_height = le16toh(mask->h);
 
-	uint8_t *s_copy = calloc(m_width * m_height, sizeof(uint8_t));
+    uint8_t *s_copy = new uint8_t[m_width * m_height];
 	if (s_copy == NULL) abort();
 
 	size_t to_copy = m_width * min(m_height, s_height);
@@ -438,7 +438,7 @@ create_masked_transp_surface(const sprite_t *sprite, const sprite_t *mask, int m
 
 	/* Unpack mask */
 	size_t m_unpack_size = m_width * m_height;
-	uint8_t *m_unpack = calloc(m_unpack_size, sizeof(uint8_t));
+    uint8_t *m_unpack = new uint8_t[m_unpack_size];
 	if (m_unpack == NULL) abort();
 
 	data_unpack_mask_sprite(m_unpack, m_data, m_unpack_size);
@@ -477,7 +477,7 @@ sdl_draw_transp_sprite(const sprite_t *sprite, int x, int y, int use_off, int y_
 	const surface_id_t id = { .sprite = sprite, .mask = NULL, .offset = color_off };
 	surface_t **surface = surface_ht_store(&transp_sprite_cache, &id);
 	if (*surface == NULL) {
-		*surface = malloc(sizeof(surface_t));
+        *surface = new surface_t;
 		if (*surface == NULL) abort();
 
 		(*surface)->surf = create_transp_surface(sprite, color_off);
@@ -512,7 +512,7 @@ sdl_draw_waves_sprite(const sprite_t *sprite, const sprite_t *mask,
 	const surface_id_t id = { .sprite = sprite, .mask = mask, .offset = 0 };
 	surface_t **surface = surface_ht_store(&transp_sprite_cache, &id);
 	if (*surface == NULL) {
-		*surface = malloc(sizeof(surface_t));
+        *surface = new surface_t;
 		if (*surface == NULL) abort();
 
 		if (mask != NULL) {
@@ -591,7 +591,7 @@ create_overlay_surface(const sprite_t *sprite)
 
 	/* Unpack */
 	size_t unpack_size = width * height;
-	uint8_t *unpack = calloc(unpack_size, sizeof(uint8_t));
+    uint8_t *unpack = new uint8_t[unpack_size];
 	if (unpack == NULL) abort();
 
 	data_unpack_overlay_sprite(unpack, data, unpack_size);
@@ -629,7 +629,7 @@ sdl_draw_overlay_sprite(const sprite_t *sprite, int x, int y, int y_off, frame_t
 	const surface_id_t id = { .sprite = sprite, .mask = NULL, .offset = 0 };
 	surface_t **surface = surface_ht_store(&overlay_sprite_cache, &id);
 	if (*surface == NULL) {
-		*surface = malloc(sizeof(surface_t));
+        *surface = new surface_t;
 		if (*surface == NULL) abort();
 
 		(*surface)->surf = create_overlay_surface(sprite);
@@ -664,7 +664,7 @@ create_masked_surface(const sprite_t *sprite, const sprite_t *mask)
 
 	void *s_data = (uint8_t *)sprite + sizeof(sprite_t);
 
-	uint8_t *s_copy = malloc(m_width * m_height * sizeof(uint8_t));
+    uint8_t *s_copy = new uint8_t[m_width * m_height];
 	if (s_copy == NULL) abort();
 
 	size_t to_copy = m_width * m_height;
@@ -681,7 +681,7 @@ create_masked_surface(const sprite_t *sprite, const sprite_t *mask)
 
 	/* Unpack mask */
 	size_t unpack_size = m_width * m_height;
-	uint8_t *m_unpack = calloc(unpack_size, sizeof(uint8_t));
+    uint8_t *m_unpack = new uint8_t[unpack_size];
 	if (m_unpack == NULL) abort();
 
 	data_unpack_mask_sprite(m_unpack, m_data, unpack_size);
@@ -716,7 +716,7 @@ sdl_draw_masked_sprite(const sprite_t *sprite, int x, int y, const sprite_t *mas
 		const surface_id_t id = { .sprite = sprite, .mask = mask, .offset = 0 };
 		surface_t **s = surface_ht_store(&masked_sprite_cache, &id);
 		if (*s == NULL) {
-			*s = malloc(sizeof(surface_t));
+            *s = new surface_t;
 			if (*s == NULL) abort();
 
 			(*s)->surf = create_masked_surface(sprite, mask);

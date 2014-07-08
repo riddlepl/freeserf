@@ -106,7 +106,7 @@ panel_bar_t *interface_get_panel_bar(interface_t *interface);
 popup_box_t *interface_get_popup_box(interface_t *interface);
 
 
-void interface_open_popup(interface_t *interface, int box);
+void interface_open_popup(interface_t *interface, box_t box);
 void interface_close_popup(interface_t *interface);
 
 void interface_open_game_init(interface_t *interface);

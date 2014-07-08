@@ -23,6 +23,7 @@
 #include "random.hpp"
 
 const mission_t mission[] = {
+#if 0
 	{
 		/* Mission 1: START */
 		.rnd = {{ 0x6d6f, 0xf7f0, 0xc8d4 }},
@@ -240,6 +241,7 @@ const mission_t mission[] = {
 		.player[3].reproduction = 24,
 		.player[3].castle = { 15, 32 },
 	}
+#endif
 };
 
 const int mission_count = sizeof(mission) / sizeof(mission[0]);

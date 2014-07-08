@@ -40,13 +40,16 @@
 
 #define GROUND_ANALYSIS_RADIUS  25
 
+/* Global game object */
+game_t game;
 
 /* Allocate and initialize a new flag_t object.
    Return -1 if no more flags can be allocated, otherwise 0. */
 int
 game_alloc_flag(flag_t **flag, int *index)
 {
-	for (int i = 0; i < game.flag_limit; i++) {
+    int i = 0;
+    for (; i < game.flag_limit; i++) {
 		if (FLAG_ALLOCATED(i)) continue;
 		game.flag_bitmap[i/8] |= BIT(7-(i&7));
 
@@ -55,11 +58,11 @@ game_alloc_flag(flag_t **flag, int *index)
 		flag_t *f = &game.flags[i];
 		f->pos = 0;
 		f->search_num = 0;
-		f->search_dir = 0;
+        f->search_dir = static_cast<dir_t>(0);
 		f->path_con = 0;
 		f->endpoint = 0;
 		f->transporter = 0;
-		for (int i = 0; i < FLAG_MAX_RES_COUNT; i++) {
+        for (i = 0; i < FLAG_MAX_RES_COUNT; i++) {
 			f->slot[i].type = RESOURCE_NONE;
 		}
 		memset(&f->length, 0, sizeof(f->length));
@@ -664,7 +667,7 @@ update_inventories()
 							if (inventory->resources[i] != 0 &&
 							    player->inventory_prio[i] >= prio) {
 								prio = player->inventory_prio[i];
-								type = i;
+                                type = static_cast<resource_type_t>(i);
 							}
 						}
 
@@ -687,7 +690,7 @@ update_inventories()
 				max_prio[i] = 0;
 				flags[i] = NULL;
 				flag_t *flag = game_get_flag(invs[i]->flag);
-				flag->search_dir = i;
+                flag->search_dir = static_cast<dir_t>(i);
 				flag_search_add_source(&search, flag);
 			}
 
@@ -715,7 +718,7 @@ update_inventories()
 					dest_bld->stock[stock].prio = 0;
 					dest_bld->stock[stock].requested += 1;
 
-					resource_type_t res = arr[0];
+                    resource_type_t res = static_cast<resource_type_t>(arr[0]);
 					if (res == RESOURCE_GROUP_FOOD) {
 						/* Select the food resource with highest amount available */
 						if (src_inv->resources[RESOURCE_MEAT] > src_inv->resources[RESOURCE_BREAD]) {
@@ -786,8 +789,8 @@ send_serf_to_road(flag_t *src, dir_t dir, int water)
 	flag_t *src_2 = src->other_endpoint.f[dir];
 	dir_t dir_2 = FLAG_OTHER_END_DIR(src, dir);
 
-	src->search_dir = 0;
-	src_2->search_dir = 1;
+    src->search_dir = static_cast<dir_t>(0);
+    src_2->search_dir = static_cast<dir_t>(1);
 
 	flag_search_t search;
 	flag_search_init(&search);
@@ -905,7 +908,7 @@ schedule_slot_to_known_dest(flag_t *flag, int slot, uint res_waiting[4])
 	flag_search_init(&search);
 
 	flag->search_num = search.id;
-	flag->search_dir = 6;
+    flag->search_dir = static_cast<dir_t>(6);
 	int tr = FLAG_TRANSPORTERS(flag);
 
 	int sources = 0;
@@ -919,7 +922,7 @@ schedule_slot_to_known_dest(flag_t *flag, int slot, uint res_waiting[4])
 				tr &= ~BIT(5-k);
 				flag_t *other_flag = flag->other_endpoint.f[5-k];
 				if (other_flag->search_num != search.id) {
-					other_flag->search_dir = 5-k;
+                    other_flag->search_dir = static_cast<dir_t>(5 - k);
 					flag_search_add_source(&search, other_flag);
 					sources += 1;
 				}
@@ -935,7 +938,7 @@ schedule_slot_to_known_dest(flag_t *flag, int slot, uint res_waiting[4])
 					tr &= ~BIT(5-k);
 					flag_t *other_flag = flag->other_endpoint.f[5-k];
 					if (other_flag->search_num != search.id) {
-						other_flag->search_dir = 5-k;
+                        other_flag->search_dir = static_cast<dir_t>(5 - k);
 						flag_search_add_source(&search, other_flag);
 						sources += 1;
 					}
@@ -950,7 +953,7 @@ schedule_slot_to_known_dest(flag_t *flag, int slot, uint res_waiting[4])
 					tr &= ~BIT(5-k);
 					flag_t *other_flag = flag->other_endpoint.f[5-k];
 					if (other_flag->search_num != search.id) {
-						other_flag->search_dir = 5-k;
+                        other_flag->search_dir = static_cast<dir_t>(5 - k);
 						flag_search_add_source(&search, other_flag);
 						sources += 1;
 					}
@@ -1013,20 +1016,20 @@ schedule_slot_to_unknown_dest(flag_t *flag, int slot)
 	   buildings requesting them. Resources not listed
 	   here will simply be moved to an inventory. */
 	const int routable[] = {
-		[RESOURCE_FISH] = 1,
-		[RESOURCE_PIG] = 1,
-		[RESOURCE_MEAT] = 1,
-		[RESOURCE_WHEAT] = 1,
-		[RESOURCE_FLOUR] = 1,
-		[RESOURCE_BREAD] = 1,
-		[RESOURCE_LUMBER] = 1,
-		[RESOURCE_PLANK] = 1,
-		[RESOURCE_STONE] = 1,
-		[RESOURCE_IRONORE] = 1,
-		[RESOURCE_STEEL] = 1,
-		[RESOURCE_COAL] = 1,
-		[RESOURCE_GOLDORE] = 1,
-		[RESOURCE_GOLDBAR] = 1
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
 	};
 
 	resource_type_t res = flag->slot[slot].type;
@@ -1102,7 +1105,7 @@ schedule_slot_to_unknown_dest(flag_t *flag, int slot)
 				flag->other_end_dir[dir] = BIT(7) |
 					(flag->other_end_dir[dir] & 0x38) | slot;
 			}
-			flag->slot[slot].dir = dir;
+            flag->slot[slot].dir = static_cast<dir_t>(dir);
 		}
 	} else {
 		flag->slot[slot].dest = r;
@@ -1178,7 +1181,7 @@ update_flags()
 						int max_tr = max_transporters[FLAG_LENGTH_CATEGORY(flag, 5-j)];
 						if (FLAG_TRANSPORTER_COUNT(flag, 5-j) < max_tr &&
 						    !FLAG_SERF_REQUEST_FAIL(flag)) {
-							int r = send_serf_to_road(flag, 5-j,
+                            int r = send_serf_to_road(flag, static_cast<dir_t>(5-j),
 										  FLAG_IS_WATER_PATH(flag, 5-j));
 							if (r < 0) flag->transporter |= BIT(7);
 						}
@@ -1353,7 +1356,7 @@ send_serf_to_flag(flag_t *dest, int type, resource_type_t res1, resource_type_t 
 				serf->s.ready_to_leave_inventory.mode = -1;
 				serf->s.ready_to_leave_inventory.dest = FLAG_INDEX(dest);
 			}
-			serf_set_type(serf, type);
+            serf_set_type(serf, static_cast<serf_type_t>(type));
 
 			if (res1 != -1) inventory->resources[res1] -= 1;
 			if (res2 != -1) inventory->resources[res2] -= 1;
@@ -1371,7 +1374,7 @@ send_serf_to_flag(flag_t *dest, int type, resource_type_t res1, resource_type_t 
 int
 game_send_geologist(flag_t *dest)
 {
-	return send_serf_to_flag(dest, SERF_GEOLOGIST, RESOURCE_HAMMER, -1);
+    return send_serf_to_flag(dest, SERF_GEOLOGIST, RESOURCE_HAMMER, static_cast<resource_type_t>(-1));
 }
 
 /* Dispatch serf to building. */
@@ -1393,7 +1396,7 @@ update_unfinished_building(building_t *building)
 	    !BUILDING_HAS_SERF(building) &&
 	    !BUILDING_SERF_REQUESTED(building)) {
 		building->progress = 1;
-		int r = send_serf_to_building(building, SERF_BUILDER, RESOURCE_HAMMER, -1);
+        int r = send_serf_to_building(building, SERF_BUILDER, RESOURCE_HAMMER, static_cast<resource_type_t>(-1));
 		if (r < 0) building->serf |= BIT(2);
 	}
 
@@ -1453,7 +1456,7 @@ update_unfinished_adv_building(building_t *building)
 
 	/* Request digger */
 	if (!BUILDING_SERF_REQUEST_FAIL(building)) {
-		int r = send_serf_to_building(building, SERF_DIGGER, RESOURCE_SHOVEL, -1);
+        int r = send_serf_to_building(building, SERF_DIGGER, RESOURCE_SHOVEL, static_cast<resource_type_t>(-1));
 		if (r < 0) building->serf |= BIT(2);
 	}
 }
@@ -1480,7 +1483,7 @@ update_building_castle(building_t *building)
 		if (best_knight != NULL) {
 			inventory_t *inventory = building->u.inventory;
 			int type = SERF_TYPE(best_knight);
-			for (serf_type_t t = SERF_KNIGHT_0; t <= SERF_KNIGHT_4; t++) {
+            for (int t = SERF_KNIGHT_0; t <= SERF_KNIGHT_4; t++) {
 				if (type > t &&
 				    inventory->serfs[t] == SERF_INDEX(best_knight)) {
 					inventory->serfs[t] = 0;
@@ -1495,7 +1498,7 @@ update_building_castle(building_t *building)
 	} else if (player->castle_knights < player->castle_knights_wanted) {
 		inventory_t *inventory = building->u.inventory;
 		int type = -1;
-		for (serf_type_t t = SERF_KNIGHT_4; t >= SERF_KNIGHT_0; t--) {
+        for (int t = SERF_KNIGHT_4; t >= SERF_KNIGHT_0; t--) {
 			if (inventory->serfs[t] != 0) {
 				type = t;
 				break;
@@ -1523,7 +1526,10 @@ update_building_castle(building_t *building)
 			} else {
 				player->send_knight_delay -= 1;
 				if (player->send_knight_delay < 0) {
-					send_serf_to_building(building, -1, -1, -1);
+                    send_serf_to_building(building,
+                                          -1,
+                                          static_cast<resource_type_t>(-1),
+                                          static_cast<resource_type_t>(-1));
 					player->send_knight_delay = 5;
 				}
 			}
@@ -1559,7 +1565,10 @@ update_building_castle(building_t *building)
 	    inventory->generic_count == 0) {
 		player->send_generic_delay -= 1;
 		if (player->send_generic_delay < 0) {
-			send_serf_to_building(building, SERF_GENERIC, -1, -1);
+            send_serf_to_building(building,
+                                  SERF_GENERIC,
+                                  static_cast<resource_type_t>(-1),
+                                  static_cast<resource_type_t>(-1));
 			player->send_generic_delay = 5;
 		}
 	}
@@ -1617,7 +1626,10 @@ handle_military_building_update(building_t *building)
 	int present_knights = building->stock[0].available;
 	if (total_knights < needed_occupants) {
 		if (!BUILDING_SERF_REQUEST_FAIL(building)) {
-			int r = send_serf_to_building(building, -1, -1, -1);
+            int r = send_serf_to_building(building,
+                                          -1,
+                                          static_cast<resource_type_t>(-1),
+                                          static_cast<resource_type_t>(-1));
 			if (r < 0) building->serf |= BIT(2);
 		}
 	} else if (needed_occupants < present_knights &&
@@ -1685,8 +1697,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_FISHER,
-							      RESOURCE_ROD, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_FISHER,
+                                              RESOURCE_ROD,
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			break;
@@ -1694,8 +1708,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_LUMBERJACK,
-							      RESOURCE_AXE, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_LUMBERJACK,
+                                              RESOURCE_AXE,
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			break;
@@ -1703,8 +1719,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_BOATBUILDER,
-							      RESOURCE_HAMMER, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_BOATBUILDER,
+                                              RESOURCE_HAMMER,
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -1721,8 +1739,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_STONECUTTER,
-							      RESOURCE_PICK, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_STONECUTTER,
+                                              RESOURCE_PICK,
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			break;
@@ -1730,8 +1750,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_MINER,
-							      RESOURCE_PICK, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_MINER,
+                                              RESOURCE_PICK,
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -1748,8 +1770,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_MINER,
-							      RESOURCE_PICK, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_MINER,
+                                              RESOURCE_PICK,
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -1766,8 +1790,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_MINER,
-							      RESOURCE_PICK, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_MINER,
+                                              RESOURCE_PICK,
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -1784,8 +1810,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_MINER,
-							      RESOURCE_PICK, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_MINER,
+                                              RESOURCE_PICK,
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -1802,7 +1830,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_FORESTER, -1, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_FORESTER,
+                                              static_cast<resource_type_t>(-1),
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			break;
@@ -1829,7 +1860,10 @@ handle_building_update(building_t *building)
 				if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 				    !BUILDING_HAS_SERF(building) &&
 				    !BUILDING_SERF_REQUESTED(building)) {
-					send_serf_to_building(building, SERF_TRANSPORTER, -1, -1);
+                    send_serf_to_building(building,
+                                          SERF_TRANSPORTER,
+                                          static_cast<resource_type_t>(-1),
+                                          static_cast<resource_type_t>(-1));
 				}
 
 				player_t *player = game.player[BUILDING_PLAYER(building)];
@@ -1839,7 +1873,10 @@ handle_building_update(building_t *building)
 				    inv->generic_count == 0) {
 					player->send_generic_delay -= 1;
 					if (player->send_generic_delay < 0) {
-						send_serf_to_building(building, SERF_GENERIC, -1, -1);
+                        send_serf_to_building(building,
+                                              SERF_GENERIC,
+                                              static_cast<resource_type_t>(-1),
+                                              static_cast<resource_type_t>(-1));
 						player->send_generic_delay = 5;
 					}
 				}
@@ -1861,7 +1898,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_FARMER, RESOURCE_SCYTHE, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_FARMER,
+                                              RESOURCE_SCYTHE,
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			break;
@@ -1869,8 +1909,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_BUTCHER,
-							      RESOURCE_CLEAVER, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_BUTCHER,
+                                              RESOURCE_CLEAVER,
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -1887,7 +1929,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_PIGFARMER, -1, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_PIGFARMER,
+                                              static_cast<resource_type_t>(-1),
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -1905,7 +1950,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_MILLER, -1, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_MILLER,
+                                              static_cast<resource_type_t>(-1),
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -1923,7 +1971,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_BAKER, -1, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_BAKER,
+                                              static_cast<resource_type_t>(-1),
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -1940,8 +1991,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_SAWMILLER,
-							      RESOURCE_SAW, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_SAWMILLER,
+                                              RESOURCE_SAW,
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -1958,8 +2011,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_SMELTER,
-							      -1, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_SMELTER,
+                                              static_cast<resource_type_t>(-1),
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -1985,8 +2040,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_TOOLMAKER,
-							      RESOURCE_HAMMER, RESOURCE_SAW);
+                int r = send_serf_to_building(building,
+                                              SERF_TOOLMAKER,
+                                              RESOURCE_HAMMER,
+                                              RESOURCE_SAW);
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -2012,8 +2069,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_WEAPONSMITH,
-							      RESOURCE_HAMMER, RESOURCE_PINCER);
+                int r = send_serf_to_building(building,
+                                              SERF_WEAPONSMITH,
+                                              RESOURCE_HAMMER,
+                                              RESOURCE_PINCER);
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -2039,8 +2098,10 @@ handle_building_update(building_t *building)
 			if (!BUILDING_SERF_REQUEST_FAIL(building) &&
 			    !BUILDING_HAS_SERF(building) &&
 			    !BUILDING_SERF_REQUESTED(building)) {
-				int r = send_serf_to_building(building, SERF_SMELTER,
-							      -1, -1);
+                int r = send_serf_to_building(building,
+                                              SERF_SMELTER,
+                                              static_cast<resource_type_t>(-1),
+                                              static_cast<resource_type_t>(-1));
 				if (r < 0) building->serf |= BIT(2);
 			}
 			if (BUILDING_HAS_SERF(building)) {
@@ -2779,10 +2840,10 @@ remove_road_backref_until_flag(map_pos_t pos, dir_t dir)
 		if (MAP_OBJ(pos) == MAP_OBJ_FLAG) break;
 
 		/* Find next direction of path. */
-		dir = -1;
-		for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+        dir = static_cast<dir_t>(-1);
+        for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 			if (BIT_TEST(MAP_PATHS(pos), d)) {
-				dir = d;
+                dir = static_cast<dir_t>(d);
 				break;
 			}
 		}
@@ -2799,25 +2860,25 @@ remove_road_backrefs(map_pos_t pos)
 	if (MAP_PATHS(pos) == 0) return -1;
 
 	/* Find directions of path segments to be split. */
-	dir_t path_1_dir = -1;
-	for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+    int path_1_dir = -1;
+    for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 		if (BIT_TEST(MAP_PATHS(pos), d)) {
 			path_1_dir = d;
 			break;
 		}
 	}
 
-	dir_t path_2_dir = -1;
-	for (dir_t d = path_1_dir+1; d <= DIR_UP; d++) {
+    dir_t path_2_dir = static_cast<dir_t>(-1);
+    for (int d = path_1_dir+1; d <= DIR_UP; d++) {
 		if (BIT_TEST(MAP_PATHS(pos), d)) {
-			path_2_dir = d;
+            path_2_dir = static_cast<dir_t>(d);
 			break;
 		}
 	}
 
 	if (path_1_dir == -1 || path_2_dir == -1) return -1;
 
-	int r = remove_road_backref_until_flag(pos, path_1_dir);
+    int r = remove_road_backref_until_flag(pos, static_cast<dir_t>(path_1_dir));
 	if (r < 0) return -1;
 
 	r = remove_road_backref_until_flag(pos, path_2_dir);
@@ -2852,7 +2913,7 @@ static void
 remove_road_forwards(map_pos_t pos, dir_t dir)
 {
 	map_tile_t *tiles = game.map.tiles;
-	dir_t in_dir = -1;
+    dir_t in_dir = static_cast<dir_t>(-1);
 
 	while (1) {
 		if (MAP_IDLE_SERF(pos)) {
@@ -2945,10 +3006,10 @@ remove_road_forwards(map_pos_t pos, dir_t dir)
 		tiles[pos].paths &= ~BIT(DIR_REVERSE(dir));
 
 		/* Find next direction of path. */
-		dir = -1;
-		for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+        dir = static_cast<dir_t>(-1);
+        for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 			if (BIT_TEST(MAP_PATHS(pos), d)) {
-				dir = d;
+                dir = static_cast<dir_t>(d);
 				break;
 			}
 		}
@@ -2970,16 +3031,16 @@ demolish_road(map_pos_t pos)
 	}
 
 	/* Find directions of path segments to be split. */
-	dir_t path_1_dir = -1;
-	for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+    int path_1_dir = -1;
+    for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 		if (BIT_TEST(MAP_PATHS(pos), d)) {
-			path_1_dir = d;
+            path_1_dir = d;
 			break;
 		}
 	}
 
-	dir_t path_2_dir = -1;
-	for (dir_t d = path_1_dir+1; d <= DIR_UP; d++) {
+    int path_2_dir = -1;
+    for (int d = path_1_dir+1; d <= DIR_UP; d++) {
 		if (BIT_TEST(MAP_PATHS(pos), d)) {
 			path_2_dir = d;
 			break;
@@ -2993,8 +3054,8 @@ demolish_road(map_pos_t pos)
 		path_2_dir = DIR_UP;
 	}
 
-	remove_road_forwards(pos, path_1_dir);
-	remove_road_forwards(pos, path_2_dir);
+    remove_road_forwards(pos, static_cast<dir_t>(path_1_dir));
+    remove_road_forwards(pos, static_cast<dir_t>(path_2_dir));
 
 	return 0;
 }
@@ -3084,9 +3145,9 @@ fill_path_serf_info(map_pos_t pos, dir_t dir, serf_path_info_t *data)
 		if (MAP_HAS_FLAG(pos)) break;
 
 		/* Find out which direction the path follows. */
-		for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+        for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 			if (BIT_TEST(paths, d)) {
-				dir = d;
+                dir = static_cast<dir_t>(d);
 				break;
 			}
 		}
@@ -3173,7 +3234,7 @@ restore_path_serf_info(flag_t *flag, dir_t dir, serf_path_info_t *data)
 			if (serf->state != SERF_STATE_WAKE_ON_PATH) {
 				serf->s.walking.wait_counter = -1;
 				if (serf->s.walking.res != 0) {
-					resource_type_t res = serf->s.walking.res-1;
+                    resource_type_t res = static_cast<resource_type_t>(serf->s.walking.res-1);
 					serf->s.walking.res = 0;
 
 					game_cancel_transported_resource(res, serf->s.walking.dest);
@@ -3201,16 +3262,16 @@ static void
 build_flag_split_path(map_pos_t pos)
 {
 	/* Find directions of path segments to be split. */
-	dir_t path_1_dir = -1;
-	for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+    int path_1_dir = -1;
+    for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 		if (BIT_TEST(MAP_PATHS(pos), d)) {
 			path_1_dir = d;
 			break;
 		}
 	}
 
-	dir_t path_2_dir = -1;
-	for (dir_t d = path_1_dir+1; d <= DIR_UP; d++) {
+    int path_2_dir = -1;
+    for (int d = path_1_dir+1; d <= DIR_UP; d++) {
 		if (BIT_TEST(MAP_PATHS(pos), d)) {
 			path_2_dir = d;
 			break;
@@ -3227,8 +3288,8 @@ build_flag_split_path(map_pos_t pos)
 	serf_path_info_t path_1_data;
 	serf_path_info_t path_2_data;
 
-	fill_path_serf_info(pos, path_1_dir, &path_1_data);
-	fill_path_serf_info(pos, path_2_dir, &path_2_data);
+    fill_path_serf_info(pos, static_cast<dir_t>(path_1_dir), &path_1_data);
+    fill_path_serf_info(pos, static_cast<dir_t>(path_2_dir), &path_2_data);
 
 	flag_t *flag_2 = game_get_flag(path_2_data.flag_index);
 	dir_t dir_2 = path_2_data.flag_dir;
@@ -3284,8 +3345,8 @@ build_flag_split_path(map_pos_t pos)
 
 	flag_t *flag = game_get_flag(MAP_OBJ_INDEX(pos));
 
-	restore_path_serf_info(flag, path_1_dir, &path_1_data);
-	restore_path_serf_info(flag, path_2_dir, &path_2_data);
+    restore_path_serf_info(flag, static_cast<dir_t>(path_1_dir), &path_1_data);
+    restore_path_serf_info(flag, static_cast<dir_t>(path_2_dir), &path_2_data);
 }
 
 /* Check whether player can build flag at pos. */
@@ -3314,7 +3375,7 @@ game_can_build_flag(map_pos_t pos, const player_t *player)
 	}
 
 	/* Check that no flags are nearby */
-	for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+    for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 		if (MAP_OBJ(MAP_MOVE(pos, d)) == MAP_OBJ_FLAG) {
 			return 0;
 		}
@@ -3971,7 +4032,7 @@ game_build_castle(map_pos_t pos, player_t *player)
 	/* Level land in hexagon below castle */
 	int h = game_get_leveling_height(pos);
 	map_set_height(pos, h);
-	for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+    for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 		map_set_height(MAP_MOVE(pos, d), h);
 	}
 
@@ -4036,7 +4097,7 @@ game_can_demolish_flag(map_pos_t pos, const player_t *player)
 	int connected = 0;
 	void *other_end = NULL;
 
-	for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+    for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 		if (FLAG_HAS_PATH(flag, d)) {
 			if (FLAG_IS_WATER_PATH(flag, d)) return 0;
 
@@ -4089,11 +4150,11 @@ demolish_flag(map_pos_t pos)
 
 	/* Handle connected flag. */
 	if (MAP_PATHS(pos)) {
-		dir_t path_1_dir = 0;
-		dir_t path_2_dir = 0;
+        int path_1_dir = 0;
+        int path_2_dir = 0;
 
 		/* Find first direction */
-		for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+        for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 			if (BIT_TEST(MAP_PATHS(pos), d)) {
 				path_1_dir = d;
 				break;
@@ -4101,7 +4162,7 @@ demolish_flag(map_pos_t pos)
 		}
 
 		/* Find second direction */
-		for (dir_t d = DIR_UP; d >= DIR_RIGHT; d--) {
+        for (int d = DIR_UP; d >= DIR_RIGHT; d--) {
 			if (BIT_TEST(MAP_PATHS(pos), d)) {
 				path_2_dir = d;
 				break;
@@ -4111,8 +4172,8 @@ demolish_flag(map_pos_t pos)
 		serf_path_info_t path_1_data;
 		serf_path_info_t path_2_data;
 
-		fill_path_serf_info(pos, path_1_dir, &path_1_data);
-		fill_path_serf_info(pos, path_2_dir, &path_2_data);
+        fill_path_serf_info(pos, static_cast<dir_t>(path_1_dir), &path_1_data);
+        fill_path_serf_info(pos, static_cast<dir_t>(path_2_dir), &path_2_data);
 
 		flag_t *flag_1 = game_get_flag(path_1_data.flag_index);
 		flag_t *flag_2 = game_get_flag(path_2_data.flag_index);
@@ -4213,8 +4274,8 @@ demolish_flag(map_pos_t pos)
 		if (flag->slot[i].type != RESOURCE_NONE) {
 			int res = flag->slot[i].type;
 			uint dest = flag->slot[i].dest;
-			game_cancel_transported_resource(res, dest);
-			game_lose_resource(res);
+            game_cancel_transported_resource(static_cast<resource_type_t>(res), dest);
+            game_lose_resource(static_cast<resource_type_t>(res));
 		}
 	}
 
@@ -4494,7 +4555,7 @@ game_surrender_land(map_pos_t pos)
 	int remove_roads = MAP_HAS_FLAG(pos);
 
 	/* Remove roads and building around pos. */
-	for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+    for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 		map_pos_t p = MAP_MOVE(pos, d);
 
 		if (MAP_OBJ(p) >= MAP_OBJ_SMALL_BUILDING &&
@@ -4543,8 +4604,7 @@ game_update_land_ownership(map_pos_t init_pos)
 	int calculate_radius = influence_radius;
 	int calculate_diameter = 1 + 2*calculate_radius;
 
-	int *temp_arr = calloc(GAME_MAX_PLAYER_COUNT*calculate_diameter*calculate_diameter,
-			       sizeof(int));
+    int *temp_arr = new int[GAME_MAX_PLAYER_COUNT*calculate_diameter*calculate_diameter];
 	if (temp_arr == NULL) abort();
 
 	const int military_influence[] = {
@@ -4697,7 +4757,7 @@ game_demolish_flag_and_roads(map_pos_t pos)
 {
 	if (MAP_HAS_FLAG(pos)) {
 		/* Remove roads around pos. */
-		for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+        for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 			map_pos_t p = MAP_MOVE(pos, d);
 
 			if (MAP_PATHS(p) & BIT(DIR_REVERSE(d))) {
@@ -4759,7 +4819,7 @@ game_occupy_enemy_building(building_t *building, int player_num)
 		tiles[building->pos].height = (1 << 7) | (player_num << 5) |
 			MAP_HEIGHT(building->pos);
 
-		for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+        for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 			map_pos_t pos = MAP_MOVE(building->pos, d);
 			tiles[pos].height = (1 << 7) | (player_num << 5) | MAP_HEIGHT(pos);
 			if (pos != flag->pos) {
@@ -4780,7 +4840,7 @@ game_occupy_enemy_building(building_t *building, int player_num)
 		}
 
 		/* Remove paths from flag. */
-		for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+        for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 			if (FLAG_HAS_PATH(flag, d)) {
 				demolish_road(MAP_MOVE(flag->pos, d));
 			}
@@ -5054,7 +5114,7 @@ game_add_player(uint face, uint color, uint supplies,
 	if (number < 0) return -1;
 
 	/* Allocate object */
-	game.player[number] = calloc(1, sizeof(player_t));
+    game.player[number] = new player_t[1];
 	if (game.player[number] == NULL) abort();
 
 	player_init(number, face, color, supplies,
@@ -5114,7 +5174,7 @@ init_spiral_pos_pattern()
 	int *pattern = game.spiral_pattern;
 
 	if (game.spiral_pos_pattern == NULL) {
-		game.spiral_pos_pattern = malloc(295*sizeof(map_pos_t));
+        game.spiral_pos_pattern = new map_pos_t[295];
 		if (game.spiral_pos_pattern == NULL) abort();
 	}
 
@@ -5170,38 +5230,38 @@ game_allocate_objects()
 {
 	/* Serfs */
 	if (game.serfs != NULL) free(game.serfs);
-	game.serfs = malloc(game.serf_limit * sizeof(serf_t));
+    game.serfs = new serf_t[game.serf_limit];
 	if (game.serfs == NULL) abort();
 
 	if (game.serf_bitmap != NULL) free(game.serf_bitmap);
-	game.serf_bitmap = calloc(((game.serf_limit-1) / 8) + 1, 1);
+    game.serf_bitmap = new uint8_t[((game.serf_limit-1) / 8) + 1];
 	if (game.serf_bitmap == NULL) abort();
 
 	/* Flags */
 	if (game.flags != NULL) free(game.flags);
-	game.flags = malloc(game.flag_limit * sizeof(flag_t));
+    game.flags = new flag_t[game.flag_limit];
 	if (game.flags == NULL) abort();
 
 	if (game.flag_bitmap != NULL) free(game.flag_bitmap);
-	game.flag_bitmap = calloc(((game.flag_limit-1) / 8) + 1, 1);
+    game.flag_bitmap = new uint8_t[((game.flag_limit-1) / 8) + 1];
 	if (game.flag_bitmap == NULL) abort();
 
 	/* Buildings */
 	if (game.buildings != NULL) free(game.buildings);
-	game.buildings = malloc(game.building_limit * sizeof(building_t));
+    game.buildings = new building_t[game.building_limit];
 	if (game.buildings == NULL) abort();
 
 	if (game.building_bitmap != NULL) free(game.building_bitmap);
-	game.building_bitmap = calloc(((game.building_limit-1) / 8) + 1, 1);
+    game.building_bitmap = new uint8_t[((game.building_limit-1) / 8) + 1];
 	if (game.building_bitmap == NULL) abort();
 
 	/* Inventories */
 	if (game.inventories != NULL) free(game.inventories);
-	game.inventories = malloc(game.inventory_limit * sizeof(inventory_t));
+    game.inventories = new inventory_t[game.inventory_limit];
 	if (game.inventories == NULL) abort();
 
 	if (game.inventory_bitmap != NULL) free(game.inventory_bitmap);
-	game.inventory_bitmap = calloc(((game.inventory_limit-1) / 8) + 1, 1);
+    game.inventory_bitmap = new uint8_t[((game.inventory_limit-1) / 8) + 1];
 	if (game.inventory_bitmap == NULL) abort();
 
 	game.max_flag_index = 0;

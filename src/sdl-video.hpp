@@ -24,7 +24,7 @@
 
 #include <stdint.h>
 
-#include "SDL.hpp"
+#include "SDL.h"
 
 #include "gfx.hpp"
 

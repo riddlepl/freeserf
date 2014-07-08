@@ -155,7 +155,7 @@ gfx_fill_rect(int x, int y, int width, int height, int color, frame_t *dest)
 void
 gfx_set_palette(int palette)
 {
-	uint8_t *pal = data_get_object(palette, NULL);
+    uint8_t *pal = reinterpret_cast<uint8_t*>(data_get_object(palette, NULL));
 	sdl_set_palette(pal);
 }
 

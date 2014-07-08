@@ -36,7 +36,8 @@
 
 typedef void game_update_map_height_func(map_pos_t pos, void *data);
 
-typedef struct {
+struct game_t
+{
     map_t map; /* ADDITION */
 	/* 0 */
 	/* MOVED to map_t
@@ -206,10 +207,10 @@ typedef struct {
 
 	int knight_morale_counter;
 	int inventory_schedule_counter;
-} game_t;
+};
 
 /* Global game object */
-game_t game;
+extern game_t game;
 
 
 /* External interface */

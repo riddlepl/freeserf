@@ -56,7 +56,7 @@ typedef struct {
 } spae_entry_t;
 
 
-static void *sprites;
+static spae_entry_t* sprites;
 static size_t sprites_size;
 static unsigned int entry_count;
 
@@ -78,8 +78,8 @@ data_load(const char *path)
 	if (r < 0) return -1;
 
 	sprites_size = sb.st_size;
-	sprites = mmap(NULL, sprites_size, PROT_READ | PROT_WRITE,
-                 MAP_PRIVATE, fd, 0);
+    sprites = static_cast<spae_entry_t*>(mmap(NULL, sprites_size, PROT_READ | PROT_WRITE,
+                 MAP_PRIVATE, fd, 0));
 	if (sprites == MAP_FAILED) {
 		int errsv = errno;
 		close(fd);
@@ -101,7 +101,7 @@ data_load(const char *path)
 	r = fseek(f, 0, SEEK_SET);
 	if (r < 0) return -1;
 
-	sprites = malloc(sprites_size);
+    sprites = new unsigned char[sprites_size];
 	if (sprites == NULL) {
 		int errsv = errno;
 		fclose(f);
@@ -165,20 +165,21 @@ data_unload()
 /* Return a pointer to the data object at index.
  If size is non-NULL it will be set to the size of the data object.
  (There's no guarantee that size is correct!). */
-void *
+struct sprite_t;
+sprite_t *
 data_get_object(int index, size_t *size)
 {
 	assert(index > 0 && index < entry_count);
 
-	spae_entry_t *entries = sprites;
-	uint8_t *bytes = sprites;
+    spae_entry_t *entries = sprites;
+    uint8_t *bytes = reinterpret_cast<uint8_t*>(sprites);
 
 	size_t offset = le32toh(entries[index].offset);
 	assert(offset != 0);
 
 	if (size) *size = le32toh(entries[index].size);
 
-	return &bytes[offset];
+    return reinterpret_cast<sprite_t*>(&bytes[offset]);
 }
 
 /* Perform various fixups of the data file entries. */

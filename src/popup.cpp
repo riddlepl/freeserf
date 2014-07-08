@@ -2244,7 +2244,7 @@ draw_transport_info_box(popup_box_t *popup, frame_t *frame)
 
 	viewport_t flag_view;
 	viewport_init(&flag_view, popup->interface);
-	flag_view.layers = VIEWPORT_LAYER_PATHS | VIEWPORT_LAYER_OBJECTS;
+    flag_view.layers = static_cast<viewport_layer_t>(VIEWPORT_LAYER_PATHS | VIEWPORT_LAYER_OBJECTS);
 	gui_object_set_displayed((gui_object_t *)&flag_view, 1);
 
 	flag_view.obj.parent = (gui_container_t *)popup;
@@ -3018,7 +3018,7 @@ handle_action(interface_t *interface, action_t action, int x, int y)
 		break;
 	case ACTION_BLD_FLIP_PAGE:
 		interface_open_popup(interface, (interface->popup.box + 1 <= BOX_ADV_2_BLD) ?
-				     (interface->popup.box + 1) : BOX_BASIC_BLD_FLIP);
+                     static_cast<box_t>(interface->popup.box + 1) : BOX_BASIC_BLD_FLIP);
 		break;
 	case ACTION_SHOW_STAT_1:
 		interface_open_popup(interface, BOX_STAT_1);
@@ -3049,7 +3049,7 @@ handle_action(interface_t *interface, action_t action, int x, int y)
 		break;
 	case ACTION_STAT_BLD_FLIP:
 		interface_open_popup(interface, (interface->popup.box + 1 <= BOX_STAT_BLD_4) ?
-				     (interface->popup.box + 1) : BOX_STAT_BLD_1);
+                     static_cast<box_t>(interface->popup.box + 1) : BOX_STAT_BLD_1);
 		break;
 	case ACTION_CLOSE_BOX:
 	case ACTION_CLOSE_SETT_BOX:
@@ -3529,7 +3529,7 @@ handle_action(interface_t *interface, action_t action, int x, int y)
 		interface->popup.box = BOX_MAP;
 		break;
 	case ACTION_MINIMAP_BLD_NEXT:
-		interface->popup.box = interface->popup.box + 1;
+        interface->popup.box = static_cast<box_t>(interface->popup.box + 1);
 		if (interface->popup.box > BOX_BLD_4) {
 			interface->popup.box = BOX_BLD_1;
 		}
@@ -3598,7 +3598,7 @@ handle_clickmap(interface_t *interface, int x, int y, const int clkmap[])
 		    clkmap[2] <= y && y < clkmap[2] + clkmap[4]) {
 			sfx_play_clip(SFX_CLICK);
 
-			action_t action = clkmap[0];
+            action_t action = static_cast<action_t>(clkmap[0]);
 			handle_action(interface, action, x-clkmap[1], y-clkmap[2]);
 			return 0;
 		}

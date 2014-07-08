@@ -42,7 +42,7 @@ typedef struct {
 static flag_proxy_t *
 flag_proxy_alloc(flag_t *flag)
 {
-	flag_proxy_t *proxy = malloc(sizeof(flag_proxy_t));
+    flag_proxy_t *proxy = new flag_proxy_t;
 	if (proxy == NULL) abort();
 
 	proxy->flag = flag;

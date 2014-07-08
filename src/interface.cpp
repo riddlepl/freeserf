@@ -64,7 +64,7 @@ interface_get_popup_box(interface_t *interface)
 
 /* Open popup box */
 void
-interface_open_popup(interface_t *interface, int box)
+interface_open_popup(interface_t *interface, box_t box)
 {
 	interface->popup.box = box;
 	gui_object_set_displayed(GUI_OBJECT(&interface->popup), 1);
@@ -74,7 +74,7 @@ interface_open_popup(interface_t *interface, int box)
 void
 interface_close_popup(interface_t *interface)
 {
-	interface->popup.box = 0;
+    interface->popup.box = static_cast<box_t>(0);
 	gui_object_set_displayed(GUI_OBJECT(&interface->popup), 0);
 	interface->panel_btns[2] = PANEL_BTN_MAP;
 	interface->panel_btns[3] = PANEL_BTN_STATS;
@@ -262,13 +262,13 @@ interface_determine_map_cursor_type_road(interface_t *interface)
 	int valid_dir = 0;
 	int length = interface->building_road_length;
 
-	for (dir_t d = DIR_RIGHT; d <= DIR_UP; d++) {
+    for (int d = DIR_RIGHT; d <= DIR_UP; d++) {
 		int sprite = 0;
 
 		if (length > 0 && interface->building_road_dirs[length-1] == DIR_REVERSE(d)) {
 			sprite = 45; /* undo */
 			valid_dir |= BIT(d);
-		} else if (game_road_segment_valid(pos, d)) {
+        } else if (game_road_segment_valid(pos, static_cast<dir_t>(d))) {
 			/* Check that road does not cross itself. */
 			map_pos_t road_pos = interface->building_road_source;
 			int crossing_self = 0;
@@ -926,8 +926,8 @@ interface_init(interface_t *interface)
 			    0, 0, 0, 0);
 
 	interface->map_cursor_pos = MAP_POS(0, 0);
-	interface->map_cursor_type = 0;
-	interface->panel_btn_type = 0;
+    interface->map_cursor_type = static_cast<map_cursor_type_t>(0);
+    interface->panel_btn_type = static_cast<panel_btn_t>(0);
 
 	interface->building_road = 0;
 
@@ -985,7 +985,7 @@ void
 interface_add_float(interface_t *interface, gui_object_t *obj,
 		    int x, int y, int width, int height)
 {
-	interface_float_t *fl = malloc(sizeof(interface_float_t));
+    interface_float_t *fl = new interface_float_t;
 	if (fl == NULL) abort();
 
 	/* Store currect location with object. */
